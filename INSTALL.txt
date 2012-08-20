@@ -1,0 +1,5 @@
+mysql_user:root
+mysql_pwd:root
+mysql_database:start
+mysql_host:localhost
+
