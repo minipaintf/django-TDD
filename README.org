@@ -1,6 +1,6 @@
 * TDD-django
 基于测试驱动的django小项目,项目主要还是为了熟悉TDD的过程和思想.
 
-** testcases
-
+** TODO testcases
+ 
 
