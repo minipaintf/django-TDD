@@ -1,0 +1,20 @@
+[
+  {
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+      "username": "daipeng",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2013-02-20T03:03:41.260Z",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$10000$GaysP9b1SE9f$u93TF/t6V8CJP058rhg7diklyhohg0O292DqMogOZQ8=",
+      "email": "daipeng123456@gmail.com",
+      "date_joined": "2013-02-20T02:49:37.892Z"
+    }
+  }
+]
