@@ -33,3 +33,7 @@ class PollModelTest(TestCase):
         self.assertEquals(only_poll_in_database.question, "what's up?")
         self.assertEquals(only_poll_in_database.pub_date, poll.pub_date)
         
+    def test_verbose_name_for_pub_date(self):
+        for field in Poll._meta.fields:
+            if field.name == 'pub_date':
+                self.assertEquals(field.verbose_name, 'Date published')

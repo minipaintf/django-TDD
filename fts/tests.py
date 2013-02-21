@@ -50,7 +50,45 @@ class PollsTest(LiveServerTestCase):
         polls_links = self.browser.find_elements_by_link_text('Polls')
         self.assertEquals(len(polls_links), 2)
 
+        # The second one looks more exciting, so she clicks it
+        polls_links[1].click()
+        # she is taken to the polls listing page, which shows she has
+        # no polls yes
+        body = self.browser.find_elements_by_link_text('body')
+        self.assertIn('o polls', body.text)
+        
+        # she sees a link to 'add' a new poll, so she clicks it
+        new_poll_link = self.browser.find_elements_by_link_text('Add poll')
+        new_poll_link.click()
+        
+        body = self.browser.find_element_by_tag_name('body')
+        self.assertIn('Question:', body.text)
+        self.assertIn('Date pulished:', body.text)
+        
+        # she types in an interesting question for the Poll
+        question_field = self.browser.find_element_by_name('question')
+        question_field.send_keys("How awsome is Test-Driven Development?")
+        
+        # she sets the date and time of publication - it'll be a new
+        # year's poll!
+        date_field = self.browser.find_element_by_name('pub_date_0')
+        date_field.send_keys('01/01/12')
+        time_field = self.browser.find_element_by_name('pub_date_1')
+        time_field.send_keys('00:00')
+        
+        # Gertrude clicks the save button
+        save_button = self.browser.find_element_by_css_selector("input[value='Save']")
+        save_button.click()
+        
+        # she is returned to the "Polls" listing, where she can see
+        # her new poll, listed as a clickable link
+        new_poll_links = self.browser.find_elements_by_link_text("How awesome is Test-Driven Development?")
+        self.assertEquals(len(new_poll_links), 1)
+        
+        # Satisfied, she goes back to sleep
         # TODO: use the admin site to create a Poll
-        self.fail('finish this test')
+        # self.fail('finish this test')
 
+
+                
         
