@@ -7,7 +7,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.utils import timezone
-from polls.models import Poll
+from polls.models import Poll,Choice
 
 class PollModelTest(TestCase):
     """
@@ -21,6 +21,33 @@ class PollModelTest(TestCase):
 
         # check we can save ite to the database
         poll.save()
+
+        # now create a Choice object
+        choice = Choice()
+        
+        # link it with our Poll
+        choice.poll = poll
+        
+        # give it some text
+        choice.choice = "doin' fine..."
+        
+        # and let's say it's had some votes
+        choice.votes = 3
+
+        # save it
+        choice.save()
+        
+        # try retrieving it from the database, using the poll
+        # object's reverse lookup
+        poll_choices = poll.choice_set.all()
+        self.assertEquals(poll_choices.count(), 1)
+        
+        # finally, check its attributes have been saved
+        choice_from_db = poll_choices[0]
+        self.assertEquals(choice_from_db, choice)
+        self.assertEquals(choice_from_db.choice, "doin' fine...")
+        self.assertEquals(choice_from_db.votes, 3)
+        
         
         # now check we can find it in the database again
         all_polls_in_database = Poll.objects.all()
@@ -37,3 +64,13 @@ class PollModelTest(TestCase):
         for field in Poll._meta.fields:
             if field.name == 'pub_date':
                 self.assertEquals(field.verbose_name, 'Date published')
+
+    def test_poll_objects_are_named_after_their_question(self):
+        p = Poll()
+        p.question = "How is babby formed?"
+        self.assertEquals(unicode(p), unicode('How is babby formed?'))
+    
+    def test_choice_defaults(self):
+        choice = Choice()
+        self.assertEquals(choice.votes, 0)
+        

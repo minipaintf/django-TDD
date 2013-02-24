@@ -19,7 +19,7 @@ class PollsTest(LiveServerTestCase):
     fixtures = ['admin_user.json']
     
     def setUp(self):
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
         
     def tearDown(self):
@@ -54,16 +54,16 @@ class PollsTest(LiveServerTestCase):
         polls_links[1].click()
         # she is taken to the polls listing page, which shows she has
         # no polls yes
-        body = self.browser.find_elements_by_link_text('body')
-        self.assertIn('o polls', body.text)
+        body = self.browser.find_element_by_tag_name('body')
+        self.assertIn('0 polls', body.text)
         
         # she sees a link to 'add' a new poll, so she clicks it
         new_poll_link = self.browser.find_elements_by_link_text('Add poll')
-        new_poll_link.click()
+        new_poll_link[0].click()
         
         body = self.browser.find_element_by_tag_name('body')
         self.assertIn('Question:', body.text)
-        self.assertIn('Date pulished:', body.text)
+        self.assertIn('Date published', body.text)
         
         # she types in an interesting question for the Poll
         question_field = self.browser.find_element_by_name('question')
@@ -82,8 +82,20 @@ class PollsTest(LiveServerTestCase):
         
         # she is returned to the "Polls" listing, where she can see
         # her new poll, listed as a clickable link
-        new_poll_links = self.browser.find_elements_by_link_text("How awesome is Test-Driven Development?")
+        new_poll_links = self.browser.find_elements_by_link_text("How awsome is Test-Driven Development?")
+        # new_poll_links = self.browser.find_elements_by_link_text("Poll object")
         self.assertEquals(len(new_poll_links), 1)
+        
+        # She sees she can enter choices for the Poll. she adds three
+        choice_1 = self.browser.find_element_by_name('choice_set-0-choice')
+        choice_1.send_keys('Very awesome')
+        choice_2 = self.browser.find_element_by_name('choice_set-1-choice')
+        choice_2.send_keys('Quite awesome')
+        choice_3 = self.browser.find_element_by_name('choice_set-3-choice')
+        choice_3.send_keys('Moderately awesome')
+        
+        # Gertrude clicks the save button
+        save_button = self.browser.find_element_by_css_selecttor("input[value='Save']")
         
         # Satisfied, she goes back to sleep
         # TODO: use the admin site to create a Poll
