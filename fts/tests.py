@@ -214,9 +214,38 @@ class PollsTest(LiveServerTestCase):
         # the page refreshes, and he sees that his choice
         # has updated the results. they now say
         # "100 % : very awesome"
+        body_text = self.browser.find_elements_by_tag_name('body').text
+        self.assertIn('100 %: Very awesome', body_text)
         
-        # the page also says "1 votes"
+        # the page also says "1 vote"
+        self.assertIn('1 vote', body_text)
         
+        # but not "1 votes" -- Herbert is impressed at the attention
+        # to detail
+        self.assertNotIn('1 votes', body_text)
+        
+        # Herbert suspects that the website isn't very well
+        # against people submitting multiple votes yet, so he tries
+        # to do a little astrotrufing
+        self.browser.find_element_by_css_selector('input[value="1"]').click()
+        self.browser.find_element_by_css_selector('input[type="submit"]').click()
+        
+        # the page refreshes, and she sees that his choice has updated
+        # the results. it still says # "100%: very awesome".
+        body_text = self.browser.find_elements_by_tag_name('body').text
+        self.assertIn("2 votes", body_text)
+        
+        # cacking manically over his l33t haxx0ring skills, he
+        # voting for a different choice
+        self.browser.find_element_by_css_selector('input[value="2"]').click()
+        self.browser.find_element_by_css_selector('input[type="submit"]').click()
+        
+        # now, the percentages update, as well as the votes
+        body_text = self.browser.find_elements_by_tag_name('body').text
+        self.assertIn('67 %: Very awesome', body_text)
+        self.assertIn('33 %: Quite awesome', body_text)
+        self.assertIn('3 votes', body_text)
+                                                  
         # Satisfied, he goes back to sleep
         self.fail('TODO')
 

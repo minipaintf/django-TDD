@@ -1,6 +1,6 @@
 # Create your views here.
 from django.http import HttpResponse
-from polls.models import Poll
+from polls.models import Poll,Choice
 from django.shortcuts import render
 from polls.forms import PollVoteForm
 
@@ -8,13 +8,14 @@ from polls.forms import PollVoteForm
 def home(request):
     context = {'polls': Poll.objects.all()}
     return render(request, 'home.html', context)
-    # content = ''
-    # for poll in Poll.objects.all():
-    #     content += poll.question
-        
-    # return HttpResponse(content)
 
 def poll(request, poll_id):
+    if request.method == 'POST':
+        choice = Choice.objects.get(id=request.POST['vote'])
+        choice.votes += 1
+        choice.save()
+        return HttpResponseRedirect(reverse('polls.views.poll', args=[poll_id,]))
+    
     poll = Poll.objects.get(pk=poll_id)
     form = PollVoteForm(poll=poll)
     return render(request, 'poll.html',{'poll': poll, 'form':form})
