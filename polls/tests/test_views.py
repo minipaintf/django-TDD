@@ -97,7 +97,7 @@ class SinglePollViewTest(TestCase):
         post_data = {'vote': str(choice2.id)}
         
         # make our request to the view
-        poll_url = '/poll/%d' % (poll1.id,)
+        poll_url = '/poll/%d/' % (poll1.id,)
         response = self.client.post(poll_url, data=post_data)
         
         # retrieve the updated choice from the database
