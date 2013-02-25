@@ -14,5 +14,5 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
                        url(r'^$', home),
                        url(r'^admin/', include(admin.site.urls)),
-                       
+                       url(r'^poll/(\d+)/$', 'polls.views.poll'),
 )

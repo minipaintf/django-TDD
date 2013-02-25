@@ -9,18 +9,21 @@ from django.test import TestCase
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from collections import namedtuple
+import time
+
 
 PollInfo = namedtuple('PollInfo', ['question', 'choices'])
 POLL1 = PollInfo(
     question = "How awesome is Test-Driven Development?",
-    choices=[
+    choices = [
         'Very awesome',
         'Quite awesome',
         'Moderately awesome',
         ],
     )
 POLL2 = PollInfo(
-    question = "Which workshop treat do you prefer?"
+    question = "Which workshop treat do you prefer?",
     choices = [
         'Beer',
         'Pizza',
@@ -94,6 +97,14 @@ class PollsTest(LiveServerTestCase):
         time_field = self.browser.find_element_by_name('pub_date_1')
         time_field.send_keys('00:00')
         
+        # She sees she can enter choices for the Poll. she adds three
+        choice_1 = self.browser.find_element_by_name('choice_set-0-choice')
+        choice_1.send_keys('Very awesome')
+        choice_2 = self.browser.find_element_by_name('choice_set-1-choice')
+        choice_2.send_keys('Quite awesome')
+        choice_3 = self.browser.find_element_by_name('choice_set-2-choice')
+        choice_3.send_keys('Moderately awesome')
+
         # Gertrude clicks the save button
         save_button = self.browser.find_element_by_css_selector("input[value='Save']")
         save_button.click()
@@ -104,16 +115,7 @@ class PollsTest(LiveServerTestCase):
         # new_poll_links = self.browser.find_elements_by_link_text("Poll object")
         self.assertEquals(len(new_poll_links), 1)
         
-        # She sees she can enter choices for the Poll. she adds three
-        choice_1 = self.browser.find_element_by_name('choice_set-0-choice')
-        choice_1.send_keys('Very awesome')
-        choice_2 = self.browser.find_element_by_name('choice_set-1-choice')
-        choice_2.send_keys('Quite awesome')
-        choice_3 = self.browser.find_element_by_name('choice_set-3-choice')
-        choice_3.send_keys('Moderately awesome')
-        
-        # Gertrude clicks the save button
-        save_button = self.browser.find_element_by_css_selecttor("input[value='Save']")
+       
         
         # Satisfied, she goes back to sleep
         # TODO: use the admin site to create a Poll
@@ -121,7 +123,7 @@ class PollsTest(LiveServerTestCase):
 
     def _setup_polls_via_admin(self):
         # Gertrude logs into the admin site
-        self.browser.get(self.live_server_url + '/amin/')
+        self.browser.get(self.live_server_url + '/admin/')
         username_field = self.browser.find_element_by_name('username')
         username_field.send_keys('daipeng')
         password_field = self.browser.find_element_by_name('password')
@@ -132,19 +134,19 @@ class PollsTest(LiveServerTestCase):
         for poll_info in [POLL1, POLL2]:
             # Follows the link to the Polls app, and adds a new poll
             self.browser.find_elements_by_link_text('Polls')[1].click()
-            self.browser.find_elements_by_link_text('Add poll').click()
+            self.browser.find_elements_by_link_text('Add poll')[0].click()
             # enters its name, and uses the today and now buttons to set
             # the publish date
             question_field = self.browser.find_element_by_name('question')
             question_field.send_keys(poll_info.question)
-            self.browser.find_elements_by_link_text('Today').click()
-            self.browser.find_elements_by_link_text('Now').Click()
+            self.browser.find_elements_by_link_text('Today')[0].click()
+            self.browser.find_elements_by_link_text('Now')[0].click()
             
             # Sees she can enter choices for the Poll on this same page
             # so she does
             for i, choice_text in enumerate(poll_info.choices):
-                choice_field = self.browser.find_element_by_name('Choice_set-%d-choice' %i)
-                choice.field.send_keys(choice_text)
+                choice_field = self.browser.find_element_by_name('choice_set-%d-choice' %i)
+                choice_field.send_keys(choice_text)
                 
             # save her new Poll
             save_button = self.browser.find_element_by_css_selector("input[value='Save']")
@@ -159,13 +161,13 @@ class PollsTest(LiveServerTestCase):
             self.browser.get(self.live_server_url + '/admin/')
             
         # She logs out of the admin site
-        self.browser.find_elements_by_link_text('Log out').click()
+        self.browser.find_elements_by_link_text('Log out')[0].click()
         
         
     def test_voting_on_a_new_poll(self):
         # First, Gertrude the administrator logs into the admin site
         # and creates a couple of new Polls, and their response choices
-        self._setup_polls_via_amdin()
+        self._setup_polls_via_admin()
         
         # now, Herbert the regular user goes to the homepage of the site. He
         # see a list of polls.
@@ -184,13 +186,30 @@ class PollsTest(LiveServerTestCase):
         self.assertEquals(main_heading.text, 'Poll Results')
         sub_heading = self.browser.find_element_by_tag_name('h2')
         self.assertEquals(sub_heading.text, first_poll_title)
-        body = self.browser.find_elements_by_tag_name('body')
+        body = self.browser.find_elements_by_tag_name('body')[0]
         self.assertIn('No-one has voted on this poll yet', body.text)
     
         # He also sees a form, which offers him several choices
         # He desided to select "very awesome"
+        choice_inputs = self.browser.find_element_by_css_selector('input[type="radio"]')
+        #self.assertEquals(len(choice_inputs), 3)
         
+        # the buttons have labels to explain then
+        choice_labels = self.browser.find_elements_by_tag_name('label')
+        choices_text = [c.text for c in choice_labels]
+        self.assertEquals(choices_text, [
+                'Vote:', # this label is auto-generated for the whole form
+                'Very awesome',
+                'Quite awesome',
+                'Moderately awesome',
+                ])
+        # He decided to select "very awesome", which is answer #1
+        chosen = self.browser.find_element_by_css_selector("input[value='1']")
+        chosen.click()
+        
+                   
         # He clicks "submit"
+        self.browser.find_element_by_css_selector('input[type="submit"]').click()
         
         # the page refreshes, and he sees that his choice
         # has updated the results. they now say
