@@ -1,6 +1,28 @@
 * TDD-django
-基于测试驱动的django小项目,项目主要还是为了熟悉TDD的过程和思想.
+一个django同票系统,亮点是测试驱动开发(TDD果然很爽),项目又完备的自动化
+功能测试(selenium)和单元测试.
+
+测试命令:
+cd #项目目录
+# 功能测试
+python manage.py test fts
+python manage.py test fts.polls.test_can_create_new_poll_via_admin_site
+python manage.py test fts.polls.test_voting_on_a_new_poll
+# 单元测试
+python manage.py test polls
 
 ** TODO testcases
+总结敏捷开发,测试驱动的技巧.
+技巧和注意事项:
+1) selenium.webdriver.Firfox的find_element*方法要注意其后的s,有s返回数
+   组，无返回对象
+2）print等常用调试命令在自动化测试时无效,可以尝试打印到文件来调试或使
+用日志模块Logging
+3) TODO
+
+关于敏捷与测试:
+1) 测试驱动的项目易于重构,易于重复测试,代码质量有保证.
+2) 功能测试应测试功能逻辑,不应测试页面显示.单元测试不应测试常量,应集中
+   为的方法逻辑的测试.
  
 
