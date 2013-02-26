@@ -1,8 +1,9 @@
 # Create your views here.
-from django.http import HttpResponse,Http
+from django.http import HttpResponse,HttpResponseRedirect
 from polls.models import Poll,Choice
 from django.shortcuts import render
 from polls.forms import PollVoteForm
+from django.core.urlresolvers import reverse
 
 
 def home(request):

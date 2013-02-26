@@ -115,8 +115,6 @@ class PollsTest(LiveServerTestCase):
         # new_poll_links = self.browser.find_elements_by_link_text("Poll object")
         self.assertEquals(len(new_poll_links), 1)
         
-       
-        
         # Satisfied, she goes back to sleep
         # TODO: use the admin site to create a Poll
         # self.fail('finish this test')
@@ -191,7 +189,7 @@ class PollsTest(LiveServerTestCase):
     
         # He also sees a form, which offers him several choices
         # He desided to select "very awesome"
-        choice_inputs = self.browser.find_element_by_css_selector('input[type="radio"]')
+        choice_inputs = self.browser.find_elements_by_css_selector('input[type="radio"]')
         #self.assertEquals(len(choice_inputs), 3)
         
         # the buttons have labels to explain then
@@ -214,7 +212,7 @@ class PollsTest(LiveServerTestCase):
         # the page refreshes, and he sees that his choice
         # has updated the results. they now say
         # "100 % : very awesome"
-        body_text = self.browser.find_elements_by_tag_name('body').text
+        body_text = self.browser.find_element_by_tag_name('body').text
         self.assertIn('100 %: Very awesome', body_text)
         
         # the page also says "1 vote"
@@ -232,7 +230,7 @@ class PollsTest(LiveServerTestCase):
         
         # the page refreshes, and she sees that his choice has updated
         # the results. it still says # "100%: very awesome".
-        body_text = self.browser.find_elements_by_tag_name('body').text
+        body_text = self.browser.find_element_by_tag_name('body').text
         self.assertIn("2 votes", body_text)
         
         # cacking manically over his l33t haxx0ring skills, he
@@ -241,11 +239,11 @@ class PollsTest(LiveServerTestCase):
         self.browser.find_element_by_css_selector('input[type="submit"]').click()
         
         # now, the percentages update, as well as the votes
-        body_text = self.browser.find_elements_by_tag_name('body').text
-        self.assertIn('67 %: Very awesome', body_text)
+        body_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('66 %: Very awesome', body_text)
         self.assertIn('33 %: Quite awesome', body_text)
         self.assertIn('3 votes', body_text)
                                                   
         # Satisfied, he goes back to sleep
-        self.fail('TODO')
+        #self.fail('TODO')
 

@@ -134,7 +134,7 @@ class SinglePollViewTest(TestCase):
         poll1.save()
         choice1 = Choice(poll=poll1, choice='42', votes=1)
         choice1.save()
-        choice2 = Choice(poll=poll1, choice='The Ultimate Answer', votes=3)
+        choice2 = Choice(poll=poll1, choice='The Ultimate Answer', votes=2)
         choice2.save()
         
         response = self.client.get('/poll/%d/' % (poll1.id, ))
@@ -143,7 +143,7 @@ class SinglePollViewTest(TestCase):
         # also check we only pluralise "votes if necessary Details.
         choice2.votes = 0
         choice2.save()
-        response = self.client.get('/poll/%d' % (poll1.id, ))
+        response = self.client.get('/poll/%d/' % (poll1.id, ))
         
         self.assertIn('1 vote', response.content)
         self.assertNotIn('1 votes', response.content)

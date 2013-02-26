@@ -18,9 +18,8 @@
     <h3>Add your vote</h3>
     <form method="POST" action="">
       {% csrf_token %}
-      <li>{{ choice.percentage|floatformat }} %: {{ choice.choice }}</li>
+      {{ form.as_p }}
       <input type="submit" />
     </form>
-
   </body>
 </html>
