@@ -16,7 +16,7 @@ class Choice(models.Model):
     poll = models.ForeignKey(Poll)
     choice = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
-	#stest = models.CharField(max_length=200,null = True,blank=True)
+	stest = models.CharField(max_length=200,null = True,blank=True)
     
     def percentage(self):
         total_votes_on_poll = sum(c.votes for c in self.poll.choice_set.all())
